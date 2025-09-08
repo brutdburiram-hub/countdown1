@@ -5,45 +5,37 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Countdown</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #ffffff;   /* พื้นหลังขาว */
-      color: #061c3a;        /* สีตัวอักษร */
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      text-align: center;
-    }
-    #out {
-      font-size: clamp(28px, 8vw, 56px);
-      font-weight: 800;
-      margin: 8px 0;        /* เว้นขอบบน–ล่างเล็กน้อย */
-      padding: 0;
-    }
+    body{margin:0;padding:0;background:#fff;color:#061c3a;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;text-align:center}
+    #out{font-weight:800;margin:8px 0;padding:0;line-height:1}
   </style>
 </head>
 <body>
   <div id="out">--:--:--</div>
 <script>
-  const qs = new URLSearchParams(location.search);
-  const targetStr = qs.get('target');
-  const pad = n => (n<10 ? '0' : '')+n;
-  let target = targetStr ? new Date(targetStr) : new Date(Date.now()+3600*1000);
+  const qs=new URLSearchParams(location.search);
+  const targetStr=qs.get('target');
+  const size=parseInt(qs.get('size')||'56',10);     // ขนาดตัวเลข
+  const mt=parseInt(qs.get('mt')||'8',10);          // margin-top
+  const mb=parseInt(qs.get('mb')||'8',10);          // margin-bottom
+  const pad=n=>(n<10?'0':'')+n;
+  document.getElementById('out').style.fontSize = size+'px';
+  document.getElementById('out').style.marginTop = mt+'px';
+  document.getElementById('out').style.marginBottom = mb+'px';
 
+  let target = targetStr ? new Date(targetStr) : new Date(Date.now()+3600*1000);
   function tick(){
-    const diff = Math.max(0, target - new Date());
-    const s = Math.floor(diff/1000);
-    const d = Math.floor(s/86400);
-    const h = Math.floor((s%86400)/3600);
-    const m = Math.floor((s%3600)/60);
-    const ss = s%60;
+    const diff=Math.max(0,target-new Date());
+    const s=Math.floor(diff/1000);
+    const d=Math.floor(s/86400);
+    const h=Math.floor((s%86400)/3600);
+    const m=Math.floor((s%3600)/60);
+    const ss=s%60;
     document.getElementById('out').textContent =
       d>0 ? `${d}d ${pad(h)}:${pad(m)}:${pad(ss)}` : `${pad(h)}:${pad(m)}:${pad(ss)}`;
   }
   tick();
-  const iv = setInterval(()=>{
-    tick();
-    if (target - new Date() <= 0) clearInterval(iv);
-  },1000);
+  const iv=setInterval(()=>{tick(); if(target-new Date()<=0) clearInterval(iv)},1000);
 </script>
 </body>
 </html>
